@@ -27,11 +27,11 @@ export default function SlidePreview({
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="mb-6 flex-shrink-0">
-        <h2 className="text-xl font-semibold text-slate-900 mb-2">
+      <div className="mb-4 sm:mb-6 flex-shrink-0">
+        <h2 className="text-lg sm:text-xl font-semibold text-slate-900 mb-1 sm:mb-2">
           Presentation Preview
         </h2>
-        <p className="text-slate-600">
+        <p className="text-sm sm:text-base text-slate-600">
           {renderedCount} of {slides.length} slides generated
           {renderedCount === slides.length && " • Ready for download"}
         </p>
@@ -39,7 +39,7 @@ export default function SlidePreview({
 
       {/* Full Display Slides */}
       <div className="flex-1 overflow-y-auto">
-        <div className="space-y-8 pr-4 pb-8">
+        <div className="space-y-4 sm:space-y-6 lg:space-y-8 pr-2 sm:pr-4 pb-4 sm:pb-8">
           {displaySlides.map((slide, index) => (
             <div
               key={index}

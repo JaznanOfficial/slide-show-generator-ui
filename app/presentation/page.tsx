@@ -386,46 +386,49 @@ function PresentationContent() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 px-6 py-4">
+      <div className="bg-white border-b border-slate-200 px-4 lg:px-6 py-3 lg:py-4">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <Button
             variant="ghost"
             onClick={handleGoBack}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 text-sm lg:text-base"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Home
+            <span className="hidden sm:inline">Back to Home</span>
+            <span className="sm:hidden">Back</span>
           </Button>
 
-          <h1 className="text-xl font-semibold text-slate-900">
-            Presentation Generator
+          <h1 className="text-lg lg:text-xl font-semibold text-slate-900">
+            <span className="hidden sm:inline">Presentation Generator</span>
+            <span className="sm:hidden">Generator</span>
           </h1>
 
           {!isGenerating && (
             <Button
               onClick={handleDownload}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 text-sm lg:text-base"
             >
               <Download className="w-4 h-4" />
-              Download Presentation
+              <span className="hidden sm:inline">Download Presentation</span>
+              <span className="sm:hidden">Download</span>
             </Button>
           )}
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto p-6">
-        <div className="grid grid-cols-12 gap-6 h-[calc(100vh-140px)]">
-          {/* Left Column - Chat History (3 columns) - Fixed */}
-          <div className="col-span-3">
-            <Card className="h-full sticky top-6">
+      <div className="max-w-7xl mx-auto p-4 lg:p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 h-[calc(100vh-140px)]">
+          {/* Left Column - Chat History (30% on mobile, 3 columns on desktop) */}
+          <div className="lg:col-span-3 order-2 lg:order-1 h-[30vh] lg:h-full">
+            <Card className="h-full lg:sticky lg:top-6">
               <ChatHistory />
             </Card>
           </div>
 
-          {/* Right Column - Slide Preview (9 columns) - Scrollable */}
-          <div className="col-span-9 overflow-y-auto">
-            <Card className="h-full p-6 relative overflow-hidden">
+          {/* Right Column - Slide Preview (70% on mobile, 9 columns on desktop) */}
+          <div className="lg:col-span-9 order-1 lg:order-2 overflow-y-auto h-[70vh] lg:h-full">
+            <Card className="h-full p-4 lg:p-6 relative overflow-hidden">
               {isGenerating ? (
                 <div className="h-full relative">
                   {/* Current slide only - clear and visible */}

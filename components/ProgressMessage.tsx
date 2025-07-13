@@ -38,27 +38,29 @@ export default function ProgressMessage({
   }, [message, setCurrentMessage]);
 
   return (
-    <div className="text-center max-w-md mx-auto">
-      <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+    <div className="text-center max-w-md mx-auto px-4">
+      <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 sm:mb-6">
         <Icon
-          className={`w-8 h-8 text-primary ${
+          className={`w-6 h-6 sm:w-8 sm:h-8 text-primary ${
             progress < 100 ? "animate-spin" : "animate-pulse"
           }`}
         />
       </div>
 
-      <p className="text-lg font-bold text-slate-600 mb-4">{message}</p>
+      <p className="text-base sm:text-lg font-bold text-slate-600 mb-3 sm:mb-4">
+        {message}
+      </p>
 
       {progress < 100 && currentSlide > 0 && (
-        <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
-          <Sparkles className="w-4 h-4" />
+        <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-slate-500">
+          <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
           <span>Generated {currentSlide} of 10 slides</span>
         </div>
       )}
 
       {progress === 100 && (
-        <div className="flex items-center justify-center gap-2 text-sm text-green-600">
-          <Sparkles className="w-4 h-4" />
+        <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-green-600">
+          <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
           <span>All slides ready for download!</span>
         </div>
       )}
