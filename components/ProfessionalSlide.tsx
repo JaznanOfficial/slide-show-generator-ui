@@ -13,6 +13,24 @@ interface ProfessionalSlideProps {
   className?: string;
 }
 
+// Different gradient combinations for each slide
+const getSlideGradient = (slideNumber: number) => {
+  const gradients = [
+    { from: "from-emerald-500", via: "via-teal-500", to: "to-cyan-500" },
+    { from: "from-purple-500", via: "via-pink-500", to: "to-rose-500" },
+    { from: "from-blue-500", via: "via-indigo-500", to: "to-purple-500" },
+    { from: "from-orange-500", via: "via-red-500", to: "to-pink-500" },
+    { from: "from-green-500", via: "via-emerald-500", to: "to-teal-500" },
+    { from: "from-violet-500", via: "via-purple-500", to: "to-fuchsia-500" },
+    { from: "from-amber-500", via: "via-orange-500", to: "to-red-500" },
+    { from: "from-cyan-500", via: "via-blue-500", to: "to-indigo-500" },
+    { from: "from-rose-500", via: "via-pink-500", to: "to-purple-500" },
+    { from: "from-lime-500", via: "via-green-500", to: "to-emerald-500" },
+  ];
+
+  return gradients[(slideNumber - 1) % gradients.length];
+};
+
 export default function ProfessionalSlide({
   slide,
   slideNumber,
@@ -20,15 +38,19 @@ export default function ProfessionalSlide({
   isActive = false,
   className = "",
 }: ProfessionalSlideProps) {
+  const gradient = getSlideGradient(slideNumber);
+
   return (
     <div
-      className={`relative bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 ${className}`}
+      className={`relative bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 min-h-screen flex flex-col ${className}`}
     >
       {/* Background Pattern */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 opacity-50"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 opacity-50"></div>
 
       {/* Header */}
-      <div className="relative bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 p-8 text-white">
+      <div
+        className={`relative bg-gradient-to-r ${gradient.from} ${gradient.via} ${gradient.to} p-8 text-white flex-shrink-0`}
+      >
         <div className="flex justify-between items-start">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-4">
@@ -36,7 +58,7 @@ export default function ProfessionalSlide({
               <div className="w-2 h-2 bg-white/20 rounded-full"></div>
               <div className="w-1 h-1 bg-white/10 rounded-full"></div>
             </div>
-            <h1 className="text-3xl font-bold mb-3 leading-tight">
+            <h1 className="text-4xl font-bold mb-3 leading-tight">
               {slide.title}
             </h1>
             <div className="w-20 h-1 bg-white/40 rounded-full"></div>
@@ -51,10 +73,10 @@ export default function ProfessionalSlide({
       </div>
 
       {/* Content Area */}
-      <div className="relative p-8">
-        <div className="max-w-4xl">
-          <div className="prose prose-lg">
-            <p className="text-slate-700 text-xl leading-relaxed font-medium">
+      <div className="relative p-8 flex-1 flex items-center justify-center">
+        <div className="max-w-4xl w-full">
+          <div className="prose prose-xl">
+            <p className="text-slate-700 text-2xl leading-relaxed font-medium text-center">
               {slide.content}
             </p>
           </div>
@@ -62,7 +84,7 @@ export default function ProfessionalSlide({
       </div>
 
       {/* Footer */}
-      <div className="relative bg-gradient-to-r from-slate-50 to-slate-100 border-t border-slate-200 px-8 py-4">
+      <div className="relative bg-gradient-to-r from-slate-50 to-slate-100 border-t border-slate-200 px-8 py-4 flex-shrink-0">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-3">
             <div className="flex items-center gap-2">
@@ -94,7 +116,11 @@ export default function ProfessionalSlide({
       </div>
 
       {/* Corner accent */}
-      <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-emerald-400/20 to-transparent rounded-bl-full"></div>
+      <div
+        className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-${
+          gradient.from.split("-")[1]
+        }-400/20 to-transparent rounded-bl-full`}
+      ></div>
     </div>
   );
 }

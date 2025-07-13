@@ -87,6 +87,19 @@ function PresentationContent() {
     }
   }, [renderedSlideCount]);
 
+  // Auto-scroll to the latest slide
+  useEffect(() => {
+    if (renderedSlideCount > 0) {
+      const slidePreview = document.querySelector(".slide-preview-container");
+      if (slidePreview) {
+        slidePreview.scrollTo({
+          top: slidePreview.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    }
+  }, [renderedSlideCount]);
+
   const progress = (renderedSlideCount / mockSlides.length) * 100;
 
   // Update the shared progress when it changes
@@ -121,23 +134,26 @@ function PresentationContent() {
             border: 1px solid #e2e8f0;
             page-break-after: always;
             position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         .slide::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom right, #ecfdf5, #f0fdfa, #ecfeff);
+            background: linear-gradient(to bottom right, #f8fafc, #f1f5f9, #e2e8f0);
             opacity: 0.5;
             pointer-events: none;
         }
         .slide-header {
-            background: linear-gradient(to right, #10b981, #14b8a6, #06b6d4);
             padding: 32px;
             color: white;
             position: relative;
+            flex-shrink: 0;
         }
         .slide-header h1 {
-            font-size: 32px;
+            font-size: 36px;
             font-weight: 700;
             margin-bottom: 12px;
             line-height: 1.2;
@@ -179,13 +195,18 @@ function PresentationContent() {
         .slide-content {
             padding: 32px;
             position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .slide-content p {
             color: #334155;
-            font-size: 20px;
+            font-size: 24px;
             line-height: 1.7;
             font-weight: 500;
             max-width: 800px;
+            text-align: center;
         }
         .slide-footer {
             background: linear-gradient(to right, #f8fafc, #f1f5f9);
@@ -195,6 +216,7 @@ function PresentationContent() {
             justify-content: space-between;
             align-items: center;
             position: relative;
+            flex-shrink: 0;
         }
         .footer-left {
             display: flex;
@@ -241,7 +263,6 @@ function PresentationContent() {
             right: 0;
             width: 96px;
             height: 96px;
-            background: linear-gradient(to bottom left, rgba(16, 185, 129, 0.2), transparent);
             border-radius: 0 0 0 100%;
         }
         @media print { 
@@ -255,10 +276,26 @@ function PresentationContent() {
 </head>
 <body>
     ${mockSlides
-      .map(
-        (slide, index) => `
+      .map((slide, index) => {
+        const gradients = [
+          { from: "#10b981", via: "#14b8a6", to: "#06b6d4" },
+          { from: "#8b5cf6", via: "#ec4899", to: "#f43f5e" },
+          { from: "#3b82f6", via: "#6366f1", to: "#8b5cf6" },
+          { from: "#f97316", via: "#ef4444", to: "#ec4899" },
+          { from: "#22c55e", via: "#10b981", to: "#14b8a6" },
+          { from: "#8b5cf6", via: "#a855f7", to: "#d946ef" },
+          { from: "#f59e0b", via: "#f97316", to: "#ef4444" },
+          { from: "#06b6d4", via: "#3b82f6", to: "#6366f1" },
+          { from: "#f43f5e", via: "#ec4899", to: "#a855f7" },
+          { from: "#84cc16", via: "#22c55e", to: "#10b981" },
+        ];
+        const gradient = gradients[index % gradients.length];
+
+        return `
     <div class="slide">
-        <div class="slide-header">
+        <div class="slide-header" style="background: linear-gradient(to right, ${
+          gradient.from
+        }, ${gradient.via}, ${gradient.to});">
             <div class="dots">
                 <div class="dot"></div>
                 <div class="dot"></div>
@@ -270,7 +307,9 @@ function PresentationContent() {
                 <div class="current">Slide ${index + 1}</div>
                 <div class="total">of ${mockSlides.length}</div>
             </div>
-            <div class="corner-accent"></div>
+            <div class="corner-accent" style="background: linear-gradient(to bottom left, ${
+              gradient.from
+            }33, transparent);"></div>
         </div>
         <div class="slide-content">
             <p>${slide.content}</p>
@@ -288,8 +327,8 @@ function PresentationContent() {
             </div>
         </div>
     </div>
-    `
-      )
+    `;
+      })
       .join("")}
 </body>
 </html>`;
@@ -355,8 +394,17 @@ function PresentationContent() {
             <Card className="h-full p-6 relative overflow-hidden">
               {isGenerating ? (
                 <div className="h-full relative">
-                  {/* Background slides with blur effect */}
-                  <div className="absolute inset-0 blur-sm opacity-40">
+                  {/* Background slides with minimal blur effect */}
+                  <div className="absolute inset-0 blur-[1px] opacity-30">
+                    <SlidePreview
+                      slides={mockSlides}
+                      renderedCount={renderedSlideCount - 1}
+                      showAll={false}
+                    />
+                  </div>
+
+                  {/* Latest slide - clear and visible */}
+                  <div className="absolute inset-0">
                     <SlidePreview
                       slides={mockSlides}
                       renderedCount={renderedSlideCount}
@@ -373,11 +421,13 @@ function PresentationContent() {
                   </div>
                 </div>
               ) : (
-                <SlidePreview
-                  slides={mockSlides}
-                  renderedCount={renderedSlideCount}
-                  showAll={true}
-                />
+                <div className="slide-preview-container h-full overflow-y-auto">
+                  <SlidePreview
+                    slides={mockSlides}
+                    renderedCount={renderedSlideCount}
+                    showAll={true}
+                  />
+                </div>
               )}
             </Card>
           </div>
