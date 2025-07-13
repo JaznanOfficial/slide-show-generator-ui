@@ -78,7 +78,7 @@ function PresentationContent() {
     } else if (renderedSlideCount < mockSlides.length) {
       const timer = setTimeout(() => {
         setRenderedSlideCount((prev) => prev + 1);
-      }, 3000); // 3 seconds between slides
+      }, 2000); // 2 seconds between slides
 
       return () => clearTimeout(timer);
     } else {
@@ -91,14 +91,48 @@ function PresentationContent() {
   useEffect(() => {
     if (renderedSlideCount > 0) {
       const slidePreview = document.querySelector(".slide-preview-container");
-      if (slidePreview) {
-        slidePreview.scrollTo({
-          top: slidePreview.scrollHeight,
+      const parentContainer = document.querySelector(".col-span-9");
+      const target = slidePreview || parentContainer;
+      if (target) {
+        target.scrollTo({
+          top: target.scrollHeight,
           behavior: "smooth",
         });
       }
     }
   }, [renderedSlideCount]);
+
+  // Auto-scroll to bottom after each render
+  useEffect(() => {
+    if (renderedSlideCount > 0) {
+      setTimeout(() => {
+        const slidePreview = document.querySelector(".slide-preview-container");
+        const parentContainer = document.querySelector(".col-span-9");
+        const target = slidePreview || parentContainer;
+        if (target) {
+          target.scrollTo({
+            top: target.scrollHeight,
+            behavior: "smooth",
+          });
+        }
+      }, 100); // Small delay to ensure the slide is rendered
+    }
+  }, [renderedSlideCount]);
+
+  // Auto-scroll during generation
+  useEffect(() => {
+    if (isGenerating && renderedSlideCount > 0) {
+      setTimeout(() => {
+        const parentContainer = document.querySelector(".col-span-9");
+        if (parentContainer) {
+          parentContainer.scrollTo({
+            top: parentContainer.scrollHeight,
+            behavior: "smooth",
+          });
+        }
+      }, 200); // Slightly longer delay for generation
+    }
+  }, [renderedSlideCount, isGenerating]);
 
   const progress = (renderedSlideCount / mockSlides.length) * 100;
 
@@ -404,7 +438,7 @@ function PresentationContent() {
                   </div>
 
                   {/* Latest slide - clear and visible */}
-                  <div className="absolute inset-0">
+                  <div className="absolute inset-0 slide-preview-container">
                     <SlidePreview
                       slides={mockSlides}
                       renderedCount={renderedSlideCount}
@@ -421,7 +455,7 @@ function PresentationContent() {
                   </div>
                 </div>
               ) : (
-                <div className="slide-preview-container h-full overflow-y-auto">
+                <div className="slide-preview-container h-full">
                   <SlidePreview
                     slides={mockSlides}
                     renderedCount={renderedSlideCount}

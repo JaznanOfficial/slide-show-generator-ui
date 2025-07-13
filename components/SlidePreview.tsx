@@ -25,7 +25,7 @@ export default function SlidePreview({
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-6 flex-shrink-0">
         <h2 className="text-xl font-semibold text-slate-900 mb-2">
           Presentation Preview
         </h2>
@@ -36,8 +36,8 @@ export default function SlidePreview({
       </div>
 
       {/* Full Display Slides */}
-      <ScrollArea className="flex-1">
-        <div className="space-y-8 pr-4">
+      <div className="flex-1 overflow-y-auto">
+        <div className="space-y-8 pr-4 pb-8">
           {displaySlides.map((slide, index) => (
             <div
               key={index}
@@ -57,7 +57,7 @@ export default function SlidePreview({
             </div>
           ))}
         </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 }
