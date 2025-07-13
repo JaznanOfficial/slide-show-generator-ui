@@ -26,7 +26,7 @@ export default function SlidePreview({
 
   return (
     <div className="h-full flex flex-col">
-      {/* Header */}
+      {/* Header (not included in PDF) */}
       <div className="mb-4 sm:mb-6 flex-shrink-0">
         <h2 className="text-lg sm:text-xl font-semibold text-slate-900 mb-1 sm:mb-2">
           Presentation Preview
@@ -37,18 +37,11 @@ export default function SlidePreview({
         </p>
       </div>
 
-      {/* Full Display Slides */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="space-y-4 sm:space-y-6 lg:space-y-8 pr-2 sm:pr-4 pb-4 sm:pb-8">
+      {/* Slides only for PDF */}
+      <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="pdf-slides">
           {displaySlides.map((slide, index) => (
-            <div
-              key={index}
-              className={`transition-all duration-500 ${
-                index === displaySlides.length - 1
-                  ? "animate-in fade-in-0 slide-in-from-bottom-4 duration-500"
-                  : ""
-              }`}
-            >
+            <div key={index} className="pdf-slide transition-all duration-500">
               <ProfessionalSlide
                 slide={slide}
                 slideNumber={renderedCount - displaySlides.length + index + 1}

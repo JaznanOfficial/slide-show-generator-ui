@@ -379,6 +379,23 @@ function PresentationContent() {
     URL.revokeObjectURL(url);
   };
 
+  const handleDownloadPDF = async () => {
+    const html2pdf = (await import("html2pdf.js")).default;
+    const slides = document.querySelector(".pdf-slides");
+    if (slides) {
+      html2pdf()
+        .set({
+          margin: 0,
+          filename: "presentation.pdf",
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+        })
+        .from(slides)
+        .save();
+    }
+  };
+
   const handleGoBack = () => {
     router.push("/");
   };
@@ -405,12 +422,12 @@ function PresentationContent() {
 
           {!isGenerating && (
             <Button
-              onClick={handleDownload}
+              onClick={handleDownloadPDF}
               className="flex items-center gap-2 text-sm lg:text-base"
             >
               <Download className="w-4 h-4" />
-              <span className="hidden sm:inline">Download Presentation</span>
-              <span className="sm:hidden">Download</span>
+              <span className="hidden sm:inline">Download PDF</span>
+              <span className="sm:hidden">PDF</span>
             </Button>
           )}
         </div>
