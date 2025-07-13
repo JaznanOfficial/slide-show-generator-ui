@@ -6,7 +6,7 @@ import SlidePreview from "@/components/SlidePreview";
 import ProgressMessage from "@/components/ProgressMessage";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Download, ArrowLeft } from "lucide-react";
+import { Download, ArrowLeft, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ProgressProvider, useProgress } from "@/lib/progress-context";
 
@@ -70,6 +70,7 @@ function PresentationContent() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isGenerating, setIsGenerating] = useState(true);
   const [renderedSlideCount, setRenderedSlideCount] = useState(0);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
     // Start rendering immediately
@@ -380,10 +381,11 @@ function PresentationContent() {
   };
 
   const handleDownloadPDF = async () => {
+    setIsDownloading(true);
     const html2pdf = (await import("html2pdf.js")).default;
     const slides = document.querySelector(".pdf-slides");
     if (slides) {
-      html2pdf()
+      await html2pdf()
         .set({
           margin: 0,
           filename: "presentation.pdf",
@@ -394,6 +396,7 @@ function PresentationContent() {
         .from(slides)
         .save();
     }
+    setIsDownloading(false);
   };
 
   const handleGoBack = () => {
@@ -424,8 +427,13 @@ function PresentationContent() {
             <Button
               onClick={handleDownloadPDF}
               className="flex items-center gap-2 text-sm lg:text-base"
+              disabled={isDownloading}
             >
-              <Download className="w-4 h-4" />
+              {isDownloading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Download className="w-4 h-4" />
+              )}
               <span className="hidden sm:inline">Download PDF</span>
               <span className="sm:hidden">PDF</span>
             </Button>
