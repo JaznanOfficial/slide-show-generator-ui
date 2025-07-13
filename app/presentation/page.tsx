@@ -428,16 +428,7 @@ function PresentationContent() {
             <Card className="h-full p-6 relative overflow-hidden">
               {isGenerating ? (
                 <div className="h-full relative">
-                  {/* Background slides with minimal blur effect */}
-                  <div className="absolute inset-0 blur-[1px] opacity-30">
-                    <SlidePreview
-                      slides={mockSlides}
-                      renderedCount={renderedSlideCount - 1}
-                      showAll={false}
-                    />
-                  </div>
-
-                  {/* Latest slide - clear and visible */}
+                  {/* Current slide only - clear and visible */}
                   <div className="absolute inset-0 slide-preview-container">
                     <SlidePreview
                       slides={mockSlides}

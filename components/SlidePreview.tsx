@@ -20,7 +20,9 @@ export default function SlidePreview({
   renderedCount = slides.length,
   showAll = false,
 }: SlidePreviewProps) {
-  const displaySlides = showAll ? slides : slides.slice(0, renderedCount);
+  const displaySlides = showAll
+    ? slides
+    : slides.slice(renderedCount - 1, renderedCount);
 
   return (
     <div className="h-full flex flex-col">
@@ -42,16 +44,16 @@ export default function SlidePreview({
             <div
               key={index}
               className={`transition-all duration-500 ${
-                index === renderedCount - 1
+                index === displaySlides.length - 1
                   ? "animate-in fade-in-0 slide-in-from-bottom-4 duration-500"
                   : ""
               }`}
             >
               <ProfessionalSlide
                 slide={slide}
-                slideNumber={index + 1}
+                slideNumber={renderedCount - displaySlides.length + index + 1}
                 totalSlides={slides.length}
-                isActive={index === renderedCount - 1}
+                isActive={index === displaySlides.length - 1}
                 className="w-full max-w-4xl mx-auto"
               />
             </div>
