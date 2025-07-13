@@ -4,25 +4,16 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Bot, User, Loader2, Sparkles, Zap, Target } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useProgress } from "@/lib/progress-context";
 
 // Mock chat messages with dynamic content
 const mockMessages = [
   { type: "user", message: "Create a presentation about our startup" },
   {
     type: "bot",
-    message: "Analyzing your requirements...",
+    message: "Getting things ready...",
     dynamic: true,
   },
-];
-
-// Dynamic message variations for real-time effect
-const dynamicMessages = [
-  "Analyzing your requirements...",
-  "Designing slide layouts...",
-  "Creating compelling content...",
-  "Adding professional touches...",
-  "Almost there...",
-  "Presentation ready!",
 ];
 
 interface DynamicMessageProps {
@@ -73,10 +64,8 @@ function DynamicMessage({ message, isTyping }: DynamicMessageProps) {
 }
 
 export default function ChatHistory() {
+  const { currentMessage } = useProgress();
   const [typingMessages, setTypingMessages] = useState<Set<number>>(new Set());
-  const [dynamicContent, setDynamicContent] = useState<{
-    [key: number]: string;
-  }>({});
 
   useEffect(() => {
     // Simulate real-time typing for the single bot message
@@ -85,28 +74,14 @@ export default function ChatHistory() {
     // Start typing immediately
     setTypingMessages((prev) => new Set(prev).add(botMessageIndex));
 
-    // Simulate dynamic content changes
-    const messageVariations = [
-      "Analyzing your requirements...",
-      "Designing slide layouts...",
-      "Creating compelling content...",
-      "Adding professional touches...",
-      "Almost there...",
-      "Ready!",
-    ];
-
-    let variationIndex = 0;
-    const contentInterval = setInterval(() => {
-      setDynamicContent((prev) => ({
-        ...prev,
-        [botMessageIndex]:
-          messageVariations[variationIndex % messageVariations.length],
-      }));
-      variationIndex++;
-    }, 2000);
-
     // Keep the typing animation going continuously
-    return () => clearInterval(contentInterval);
+    return () => {
+      setTypingMessages((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(botMessageIndex);
+        return newSet;
+      });
+    };
   }, []);
 
   return (
@@ -127,7 +102,7 @@ export default function ChatHistory() {
         <div className="space-y-4">
           {mockMessages.map((msg, index) => {
             const isTyping = typingMessages.has(index);
-            const dynamicMessage = dynamicContent[index] || msg.message;
+            const dynamicMessage = index === 1 ? currentMessage : msg.message;
 
             return (
               <div key={index} className="flex gap-3">

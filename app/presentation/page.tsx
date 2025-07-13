@@ -1,30 +1,72 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import ChatHistory from '@/components/ChatHistory';
-import SlidePreview from '@/components/SlidePreview';
-import ProgressMessage from '@/components/ProgressMessage';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Download, ArrowLeft } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from "react";
+import ChatHistory from "@/components/ChatHistory";
+import SlidePreview from "@/components/SlidePreview";
+import ProgressMessage from "@/components/ProgressMessage";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Download, ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ProgressProvider, useProgress } from "@/lib/progress-context";
 
 // Mock slide data
 const mockSlides = [
-  { title: "Welcome to Our Presentation", content: "An introduction to our innovative solutions and vision for the future." },
-  { title: "Problem Statement", content: "Identifying key challenges in the current market landscape and user pain points." },
-  { title: "Our Solution", content: "Revolutionary approach combining AI technology with user-centered design principles." },
-  { title: "Market Analysis", content: "Comprehensive research showing significant opportunities in the target market." },
-  { title: "Technology Stack", content: "Cutting-edge technologies powering our platform: React, Node.js, AI/ML, Cloud Infrastructure." },
-  { title: "Business Model", content: "Sustainable revenue streams through subscription services and enterprise partnerships." },
-  { title: "Competitive Advantage", content: "Unique value propositions that set us apart from existing market solutions." },
-  { title: "Growth Strategy", content: "Scalable approach to market expansion and customer acquisition strategies." },
-  { title: "Financial Projections", content: "Conservative estimates showing strong ROI and sustainable growth trajectory." },
-  { title: "Next Steps", content: "Clear roadmap for implementation, milestones, and future development phases." }
+  {
+    title: "Welcome to Our Presentation",
+    content:
+      "An introduction to our innovative solutions and vision for the future.",
+  },
+  {
+    title: "Problem Statement",
+    content:
+      "Identifying key challenges in the current market landscape and user pain points.",
+  },
+  {
+    title: "Our Solution",
+    content:
+      "Revolutionary approach combining AI technology with user-centered design principles.",
+  },
+  {
+    title: "Market Analysis",
+    content:
+      "Comprehensive research showing significant opportunities in the target market.",
+  },
+  {
+    title: "Technology Stack",
+    content:
+      "Cutting-edge technologies powering our platform: React, Node.js, AI/ML, Cloud Infrastructure.",
+  },
+  {
+    title: "Business Model",
+    content:
+      "Sustainable revenue streams through subscription services and enterprise partnerships.",
+  },
+  {
+    title: "Competitive Advantage",
+    content:
+      "Unique value propositions that set us apart from existing market solutions.",
+  },
+  {
+    title: "Growth Strategy",
+    content:
+      "Scalable approach to market expansion and customer acquisition strategies.",
+  },
+  {
+    title: "Financial Projections",
+    content:
+      "Conservative estimates showing strong ROI and sustainable growth trajectory.",
+  },
+  {
+    title: "Next Steps",
+    content:
+      "Clear roadmap for implementation, milestones, and future development phases.",
+  },
 ];
 
-export default function PresentationPage() {
+function PresentationContent() {
   const router = useRouter();
+  const { setProgress } = useProgress();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isGenerating, setIsGenerating] = useState(true);
   const [renderedSlideCount, setRenderedSlideCount] = useState(0);
@@ -35,9 +77,9 @@ export default function PresentationPage() {
       setRenderedSlideCount(1);
     } else if (renderedSlideCount < mockSlides.length) {
       const timer = setTimeout(() => {
-        setRenderedSlideCount(prev => prev + 1);
+        setRenderedSlideCount((prev) => prev + 1);
       }, 3000); // 3 seconds between slides
-      
+
       return () => clearTimeout(timer);
     } else {
       // All slides rendered
@@ -46,6 +88,11 @@ export default function PresentationPage() {
   }, [renderedSlideCount]);
 
   const progress = (renderedSlideCount / mockSlides.length) * 100;
+
+  // Update the shared progress when it changes
+  useEffect(() => {
+    setProgress(progress);
+  }, [progress, setProgress]);
 
   const handleDownload = () => {
     // Create HTML content for the presentation
@@ -66,22 +113,28 @@ export default function PresentationPage() {
     </style>
 </head>
 <body>
-    ${mockSlides.map((slide, index) => `
+    ${mockSlides
+      .map(
+        (slide, index) => `
     <div class="slide">
         <h1>${slide.title}</h1>
         <p>${slide.content}</p>
-        <div class="slide-number">Slide ${index + 1} of ${mockSlides.length}</div>
+        <div class="slide-number">Slide ${index + 1} of ${
+          mockSlides.length
+        }</div>
     </div>
-    `).join('')}
+    `
+      )
+      .join("")}
 </body>
 </html>`;
 
     // Create and download the file
-    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const blob = new Blob([htmlContent], { type: "text/html" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'presentation.html';
+    a.download = "presentation.html";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -89,7 +142,7 @@ export default function PresentationPage() {
   };
 
   const handleGoBack = () => {
-    router.push('/');
+    router.push("/");
   };
 
   return (
@@ -97,17 +150,24 @@ export default function PresentationPage() {
       {/* Header */}
       <div className="bg-white border-b border-slate-200 px-6 py-4">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <Button variant="ghost" onClick={handleGoBack} className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            onClick={handleGoBack}
+            className="flex items-center gap-2"
+          >
             <ArrowLeft className="w-4 h-4" />
             Back to Home
           </Button>
-          
+
           <h1 className="text-xl font-semibold text-slate-900">
             Presentation Generator
           </h1>
-          
+
           {!isGenerating && (
-            <Button onClick={handleDownload} className="flex items-center gap-2">
+            <Button
+              onClick={handleDownload}
+              className="flex items-center gap-2"
+            >
               <Download className="w-4 h-4" />
               Download Presentation
             </Button>
@@ -132,21 +192,40 @@ export default function PresentationPage() {
                 <div className="h-full relative">
                   {/* Background slides with blur effect */}
                   <div className="absolute inset-0 blur-sm opacity-40">
-                    <SlidePreview slides={mockSlides} renderedCount={renderedSlideCount} showAll={false} />
+                    <SlidePreview
+                      slides={mockSlides}
+                      renderedCount={renderedSlideCount}
+                      showAll={false}
+                    />
                   </div>
-                  
+
                   {/* Progress message overlay */}
                   <div className="absolute inset-0 flex items-center justify-center bg-white/85 backdrop-blur-sm">
-                    <ProgressMessage progress={progress} currentSlide={renderedSlideCount} />
+                    <ProgressMessage
+                      progress={progress}
+                      currentSlide={renderedSlideCount}
+                    />
                   </div>
                 </div>
               ) : (
-                <SlidePreview slides={mockSlides} renderedCount={renderedSlideCount} showAll={true} />
+                <SlidePreview
+                  slides={mockSlides}
+                  renderedCount={renderedSlideCount}
+                  showAll={true}
+                />
               )}
             </Card>
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PresentationPage() {
+  return (
+    <ProgressProvider>
+      <PresentationContent />
+    </ProgressProvider>
   );
 }
