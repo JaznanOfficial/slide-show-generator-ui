@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Card } from '@/components/ui/card';
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card } from "@/components/ui/card";
+import ProfessionalSlide from "./ProfessionalSlide";
 
 interface Slide {
   title: string;
@@ -14,9 +15,13 @@ interface SlidePreviewProps {
   showAll?: boolean;
 }
 
-export default function SlidePreview({ slides, renderedCount = slides.length, showAll = false }: SlidePreviewProps) {
+export default function SlidePreview({
+  slides,
+  renderedCount = slides.length,
+  showAll = false,
+}: SlidePreviewProps) {
   const displaySlides = showAll ? slides : slides.slice(0, renderedCount);
-  
+
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
@@ -30,51 +35,26 @@ export default function SlidePreview({ slides, renderedCount = slides.length, sh
         </p>
       </div>
 
-      {/* Slides Grid */}
+      {/* Full Display Slides */}
       <ScrollArea className="flex-1">
-        <div className="grid grid-cols-2 gap-4 pr-4">
+        <div className="space-y-8 pr-4">
           {displaySlides.map((slide, index) => (
-            <Card 
-              key={index} 
-              className={`p-4 hover:shadow-md transition-all duration-500 cursor-pointer group ${
-                index === renderedCount - 1 ? 'animate-in fade-in-0 slide-in-from-bottom-4 duration-500' : ''
+            <div
+              key={index}
+              className={`transition-all duration-500 ${
+                index === renderedCount - 1
+                  ? "animate-in fade-in-0 slide-in-from-bottom-4 duration-500"
+                  : ""
               }`}
             >
-              <div className="aspect-video bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg p-4 flex flex-col justify-between border-2 border-transparent group-hover:border-primary/20 transition-colors">
-                {/* Slide Number */}
-                <div className="text-xs text-slate-500 mb-2">
-                  Slide {index + 1}
-                </div>
-                
-                {/* Slide Content */}
-                <div className="flex-1 flex flex-col justify-center">
-                  <h3 className="font-semibold text-slate-900 text-sm mb-2 line-clamp-2">
-                    {slide.title}
-                  </h3>
-                  <p className="text-xs text-slate-600 line-clamp-3">
-                    {slide.content}
-                  </p>
-                </div>
-                
-                {/* Visual Elements */}
-                <div className="flex justify-between items-end mt-3">
-                  <div className="flex space-x-1">
-                    <div className={`w-1 h-1 rounded-full transition-colors duration-300 ${
-                      index === renderedCount - 1 ? 'bg-green-500 animate-pulse' : 'bg-primary'
-                    }`} />
-                    <div className="w-1 h-1 bg-primary/60 rounded-full" />
-                    <div className="w-1 h-1 bg-primary/30 rounded-full" />
-                  </div>
-                  <div className="text-xs text-slate-400">
-                    {index === renderedCount - 1 ? (
-                      <span className="text-green-600 animate-pulse">✓ Just Generated</span>
-                    ) : (
-                      <span>✓ Generated</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </Card>
+              <ProfessionalSlide
+                slide={slide}
+                slideNumber={index + 1}
+                totalSlides={slides.length}
+                isActive={index === renderedCount - 1}
+                className="w-full max-w-4xl mx-auto"
+              />
+            </div>
           ))}
         </div>
       </ScrollArea>

@@ -47,13 +47,7 @@ export default function ProgressMessage({
         />
       </div>
 
-      <h3 className="text-xl font-semibold text-slate-900 mb-2">
-        {progress < 100
-          ? "Generating Your Presentation"
-          : "Presentation Complete!"}
-      </h3>
-
-      <p className="text-lg text-slate-600 mb-4">{message}</p>
+      <p className="text-lg font-bold text-slate-600 mb-4">{message}</p>
 
       {progress < 100 && currentSlide > 0 && (
         <div className="flex items-center justify-center gap-2 text-sm text-slate-500">

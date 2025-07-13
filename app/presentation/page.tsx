@@ -95,7 +95,7 @@ function PresentationContent() {
   }, [progress, setProgress]);
 
   const handleDownload = () => {
-    // Create HTML content for the presentation
+    // Create HTML content for the presentation with professional design
     const htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
@@ -104,12 +104,153 @@ function PresentationContent() {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generated Presentation</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f8fafc; }
-        .slide { background: white; margin: 20px auto; padding: 40px; max-width: 800px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); page-break-after: always; }
-        .slide h1 { color: #1e293b; font-size: 2.5rem; margin-bottom: 20px; }
-        .slide p { color: #475569; font-size: 1.2rem; line-height: 1.6; }
-        .slide-number { color: #94a3b8; font-size: 0.9rem; margin-top: 30px; }
-        @media print { body { background: white; } .slide { box-shadow: none; margin: 0; } }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: #f8fafc; 
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .slide { 
+            background: white; 
+            margin: 40px auto; 
+            max-width: 900px; 
+            border-radius: 16px; 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            page-break-after: always;
+            position: relative;
+        }
+        .slide::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom right, #ecfdf5, #f0fdfa, #ecfeff);
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .slide-header {
+            background: linear-gradient(to right, #10b981, #14b8a6, #06b6d4);
+            padding: 32px;
+            color: white;
+            position: relative;
+        }
+        .slide-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+        .slide-header .dots {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .slide-header .dot {
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+        }
+        .slide-header .dot:nth-child(1) { width: 12px; height: 12px; }
+        .slide-header .dot:nth-child(2) { width: 8px; height: 8px; background: rgba(255,255,255,0.2); }
+        .slide-header .dot:nth-child(3) { width: 4px; height: 4px; background: rgba(255,255,255,0.1); }
+        .slide-header .accent-line {
+            width: 80px;
+            height: 4px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 2px;
+        }
+        .slide-number {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(8px);
+            border-radius: 8px;
+            padding: 8px 16px;
+            text-align: center;
+        }
+        .slide-number .current {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .slide-number .total {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        .slide-content {
+            padding: 32px;
+            position: relative;
+        }
+        .slide-content p {
+            color: #334155;
+            font-size: 20px;
+            line-height: 1.7;
+            font-weight: 500;
+            max-width: 800px;
+        }
+        .slide-footer {
+            background: linear-gradient(to right, #f8fafc, #f1f5f9);
+            border-top: 1px solid #e2e8f0;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .footer-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+        }
+        .footer-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #334155;
+        }
+        .footer-divider {
+            width: 1px;
+            height: 16px;
+            background: #cbd5e1;
+        }
+        .footer-subtitle {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .footer-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .status-text {
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .corner-accent {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 96px;
+            height: 96px;
+            background: linear-gradient(to bottom left, rgba(16, 185, 129, 0.2), transparent);
+            border-radius: 0 0 0 100%;
+        }
+        @media print { 
+            body { background: white; padding: 0; } 
+            .slide { box-shadow: none; margin: 0; page-break-after: always; }
+        }
+        @page {
+            margin: 0.5in;
+        }
     </style>
 </head>
 <body>
@@ -117,11 +258,35 @@ function PresentationContent() {
       .map(
         (slide, index) => `
     <div class="slide">
-        <h1>${slide.title}</h1>
-        <p>${slide.content}</p>
-        <div class="slide-number">Slide ${index + 1} of ${
-          mockSlides.length
-        }</div>
+        <div class="slide-header">
+            <div class="dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <h1>${slide.title}</h1>
+            <div class="accent-line"></div>
+            <div class="slide-number">
+                <div class="current">Slide ${index + 1}</div>
+                <div class="total">of ${mockSlides.length}</div>
+            </div>
+            <div class="corner-accent"></div>
+        </div>
+        <div class="slide-content">
+            <p>${slide.content}</p>
+        </div>
+        <div class="slide-footer">
+            <div class="footer-left">
+                <div class="footer-dot"></div>
+                <span class="footer-text">AI Generated</span>
+                <div class="footer-divider"></div>
+                <span class="footer-subtitle">Professional Presentation</span>
+            </div>
+            <div class="footer-status">
+                <div class="status-dot" style="background: #10b981;"></div>
+                <span class="status-text" style="color: #059669;">Generated</span>
+            </div>
+        </div>
     </div>
     `
       )
