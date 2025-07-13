@@ -2,7 +2,7 @@
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Bot, User, Loader2, Sparkles, Zap, Target } from "lucide-react";
+import { Bot, User, Loader2, Sparkles, Zap, Target, Check } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useProgress } from "@/lib/progress-context";
 
@@ -19,15 +19,20 @@ const mockMessages = [
 interface DynamicMessageProps {
   message: string;
   isTyping: boolean;
+  isComplete: boolean;
 }
 
-function DynamicMessage({ message, isTyping }: DynamicMessageProps) {
+function DynamicMessage({
+  message,
+  isTyping,
+  isComplete,
+}: DynamicMessageProps) {
   const [displayedText, setDisplayedText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
-    if (isTyping) {
+    if (isTyping && !isComplete) {
       setIsAnimating(true);
       setDisplayedText("");
       setCurrentIndex(0);
@@ -47,7 +52,7 @@ function DynamicMessage({ message, isTyping }: DynamicMessageProps) {
       setDisplayedText(message);
       setIsAnimating(false);
     }
-  }, [message, isTyping]);
+  }, [message, isTyping, isComplete]);
 
   useEffect(() => {
     setDisplayedText(message.slice(0, currentIndex));
@@ -56,7 +61,7 @@ function DynamicMessage({ message, isTyping }: DynamicMessageProps) {
   return (
     <div className="flex items-center gap-2">
       <span>{displayedText}</span>
-      {isAnimating && (
+      {isAnimating && !isComplete && (
         <span className="inline-block w-2 h-4 bg-slate-600 animate-pulse" />
       )}
     </div>
@@ -64,25 +69,26 @@ function DynamicMessage({ message, isTyping }: DynamicMessageProps) {
 }
 
 export default function ChatHistory() {
-  const { currentMessage } = useProgress();
+  const { currentMessage, progress } = useProgress();
   const [typingMessages, setTypingMessages] = useState<Set<number>>(new Set());
+  const isComplete = progress >= 100;
 
   useEffect(() => {
     // Simulate real-time typing for the single bot message
     const botMessageIndex = 1; // The bot message is at index 1
 
-    // Start typing immediately
-    setTypingMessages((prev) => new Set(prev).add(botMessageIndex));
-
-    // Keep the typing animation going continuously
-    return () => {
+    if (!isComplete) {
+      // Start typing immediately
+      setTypingMessages((prev) => new Set(prev).add(botMessageIndex));
+    } else {
+      // Remove typing state when complete
       setTypingMessages((prev) => {
         const newSet = new Set(prev);
         newSet.delete(botMessageIndex);
         return newSet;
       });
-    };
-  }, []);
+    }
+  }, [isComplete]);
 
   return (
     <div className="h-full flex flex-col">
@@ -128,12 +134,18 @@ export default function ChatHistory() {
                     <span className="text-xs text-slate-500">
                       {msg.type === "user" ? "2m ago" : "1m ago"}
                     </span>
-                    {msg.type === "bot" && isTyping && (
+                    {msg.type === "bot" && isTyping && !isComplete && (
                       <div className="flex items-center gap-1">
                         <Loader2 className="w-3 h-3 animate-spin text-purple-600" />
                         <span className="text-xs text-purple-600">
                           typing...
                         </span>
+                      </div>
+                    )}
+                    {msg.type === "bot" && isComplete && (
+                      <div className="flex items-center gap-1">
+                        <Check className="w-3 h-3 text-green-600" />
+                        <span className="text-xs text-green-600">done</span>
                       </div>
                     )}
                   </div>
@@ -149,6 +161,7 @@ export default function ChatHistory() {
                       <DynamicMessage
                         message={dynamicMessage}
                         isTyping={isTyping}
+                        isComplete={isComplete}
                       />
                     ) : (
                       msg.message
@@ -164,8 +177,18 @@ export default function ChatHistory() {
       {/* Status */}
       <div className="p-4 border-t border-slate-200">
         <div className="flex items-center gap-2 text-sm text-slate-600">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-          AI is generating your presentation...
+          <div
+            className={`w-2 h-2 rounded-full ${
+              isComplete ? "bg-green-500" : "bg-green-500 animate-pulse"
+            }`}
+          />
+          {isComplete ? (
+            <span className="text-green-600">
+              Presentation ready for download!
+            </span>
+          ) : (
+            <span>AI is generating your presentation...</span>
+          )}
         </div>
       </div>
     </div>
