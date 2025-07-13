@@ -14,22 +14,6 @@ const mockMessages = [
     message: "Getting things ready...",
     dynamic: true,
   },
-  {
-    type: "user",
-    message: "Include market analysis and financial projections",
-  },
-  {
-    type: "bot",
-    message:
-      "Adding market analysis and financial projections to your presentation...",
-    dynamic: true,
-  },
-  { type: "user", message: "Make it look professional with modern design" },
-  {
-    type: "bot",
-    message: "Applying professional styling and modern design elements...",
-    dynamic: true,
-  },
 ];
 
 interface DynamicMessageProps {

@@ -419,15 +419,15 @@ function PresentationContent() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto p-4 lg:p-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 h-[calc(100vh-140px)]">
-          {/* Left Column - Chat History (30% on mobile, 3 columns on desktop) */}
-          <div className="lg:col-span-3 order-2 lg:order-1 h-[30vh] lg:h-full">
+          {/* Left Column - Chat History (Compact on mobile, 3 columns on desktop) */}
+          <div className="lg:col-span-3 order-2 lg:order-1 h-48 lg:h-full">
             <Card className="h-full lg:sticky lg:top-6">
               <ChatHistory />
             </Card>
           </div>
 
-          {/* Right Column - Slide Preview (70% on mobile, 9 columns on desktop) */}
-          <div className="lg:col-span-9 order-1 lg:order-2 overflow-y-auto h-[70vh] lg:h-full">
+          {/* Right Column - Slide Preview (More space on mobile, 9 columns on desktop) */}
+          <div className="lg:col-span-9 order-1 lg:order-2 overflow-y-auto">
             <Card className="h-full p-4 lg:p-6 relative overflow-hidden">
               {isGenerating ? (
                 <div className="h-full relative">
