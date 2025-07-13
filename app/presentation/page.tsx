@@ -178,15 +178,15 @@ function PresentationContent() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto p-6">
         <div className="grid grid-cols-12 gap-6 h-[calc(100vh-140px)]">
-          {/* Left Column - Chat History (3 columns) */}
+          {/* Left Column - Chat History (3 columns) - Fixed */}
           <div className="col-span-3">
-            <Card className="h-full">
+            <Card className="h-full sticky top-6">
               <ChatHistory />
             </Card>
           </div>
 
-          {/* Right Column - Slide Preview (9 columns) */}
-          <div className="col-span-9">
+          {/* Right Column - Slide Preview (9 columns) - Scrollable */}
+          <div className="col-span-9 overflow-y-auto">
             <Card className="h-full p-6 relative overflow-hidden">
               {isGenerating ? (
                 <div className="h-full relative">
